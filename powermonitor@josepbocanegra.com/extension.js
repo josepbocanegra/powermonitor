@@ -5,8 +5,10 @@ const Me = ExtensionUtils.getCurrentExtension();
 const Main = imports.ui.main;
 const PanelMenu = imports.ui.panelMenu;
 const GLib = imports.gi.GLib;
-const DATAPATH = "/sys/class/power_supply/BAT1/power_now";
-const DATAPATH2 = "/sys/class/power_supply/BAT0/power_now";
+const POWERNOWPATH1 = "/sys/class/power_supply/BAT1/power_now";
+const POWERNOWPATH2 = "/sys/class/power_supply/BAT0/power_now";
+const ENERGYNOWPATH1 = "/sys/class/power_supply/BAT1/energy_now";
+const ENERGYNOWPATH2 = "/sys/class/power_supply/BAT0/energy_now";
 
 let sourceId = null;
 
@@ -51,13 +53,16 @@ class Extension {
 
 function getCurrentPower() {
     let currentPower=0;
-    let battery="-ext";
-    currentPower=Number(GLib.file_get_contents(DATAPATH)[1])/1000000;
+    let battery=" - ext";
+    energyNow1 = Number(GLib.file_get_contents(ENERGYNOWPATH1)[1])/1000000;
+    energyNow2 = Number(GLib.file_get_contents(ENERGYNOWPATH2)[1])/1000000;
+    totalEnergyNow = energyNow1 + energyNow2;
+    currentPower=Number(GLib.file_get_contents(POWERNOWPATH1)[1])/1000000;
     if(currentPower == 0) {
-        battery="-int";
-        currentPower=Number(GLib.file_get_contents(DATAPATH2)[1])/1000000;
+        battery=" - int";
+        currentPower=Number(GLib.file_get_contents(POWERNOWPATH2)[1])/1000000;
     }
-    return currentPower.toFixed(2)+"W"+battery;
+    return totalEnergyNow.toFixed(2) + "Wh - " + currentPower.toFixed(2)+"W"+battery;
 }
 
 function init() {
