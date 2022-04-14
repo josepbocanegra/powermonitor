@@ -3,6 +3,7 @@
   "description": "Monitor power consumption",
   "uuid": "powermonitor@josepbocanegra.com",
   "shell-version": [
+    "41",
     "42"
   ]
 }
