@@ -1,0 +1,8 @@
+{
+  "name": "Power Monitor",
+  "description": "Monitor power consumption",
+  "uuid": "powermonitor@josepbocanegra.com",
+  "shell-version": [
+    "42"
+  ]
+}
