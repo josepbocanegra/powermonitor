@@ -19,29 +19,23 @@ class Extension {
         log(`enabling ${Me.metadata.name}`);
 
         let indicatorName = `${Me.metadata.name} Indicator`;
-        
-        // Create a panel button
+
         this._indicator = new PanelMenu.Button(0.0, indicatorName, false);
         
-        // Add an icon
         let label = new St.Label({
-            text: 'loading...'});
+            text: 'loading...',
+            style_class: 'power'
+        });
         this._indicator.add_child(label);
 
-        // `Main.panel` is the actual panel you see at the top of the screen,
-        // not a class constructor.
         Main.panel.addToStatusArea(indicatorName, this._indicator);
 
         sourceId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 5, () => {
-            log('Source triggered');
-            label.set_text(getCurrentPower().toFixed(2)+"W");
-    
+            label.set_text(getCurrentPower());   
             return GLib.SOURCE_CONTINUE;
         });
     }
     
-    // REMINDER: It's required for extensions to clean up after themselves when
-    // they are disabled. This is required for approval during review!
     disable() {
         log(`disabling ${Me.metadata.name}`);
 
@@ -53,16 +47,17 @@ class Extension {
         this._indicator.destroy();
         this._indicator = null;
     }
-
-
 }
 
 function getCurrentPower() {
-    let currentPower=0
+    let currentPower=0;
+    let battery="-ext";
     currentPower=Number(GLib.file_get_contents(DATAPATH)[1])/1000000;
-    if(currentPower == 0)
+    if(currentPower == 0) {
+        battery="-int";
         currentPower=Number(GLib.file_get_contents(DATAPATH2)[1])/1000000;
-    return currentPower;
+    }
+    return currentPower.toFixed(2)+"W"+battery;
 }
 
 function init() {
