@@ -31,7 +31,7 @@ class Extension {
 
         Main.panel.addToStatusArea(indicatorName, this._indicator);
 
-        sourceId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 5, () => {
+        sourceId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 8, () => {
             label.set_text(getCurrentPower());   
             return GLib.SOURCE_CONTINUE;
         });
@@ -57,7 +57,8 @@ function getCurrentPower() {
     currentNow = Number(GLib.file_get_contents(CURRENTNOWPATH)[1])/1000000;
     totalEnergyNow = voltageNow * currentNow;
     chargeNow=Number(GLib.file_get_contents(CHARGENOWPATH)[1])/100000*1.1520;
-    return chargeNow.toFixed(2) + "Wh - " + totalEnergyNow.toFixed(2)+"W"+battery;
+    remainingTime = chargeNow/totalEnergyNow;
+    return chargeNow.toFixed(2) + " Wh | " + totalEnergyNow.toFixed(2)+" W | " + remainingTime.toFixed(2)+ " h";
 }
 
 function init() {
