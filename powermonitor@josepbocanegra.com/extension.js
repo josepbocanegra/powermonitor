@@ -63,7 +63,7 @@ function getCurrentPower() {
         currentPower=Number(GLib.file_get_contents(POWERNOWPATH2)[1])/1000000;
     }
     let remainingTime = totalEnergyNow/currentPower;
-    return totalEnergyNow.toFixed(2) + " Wh - " + currentPower.toFixed(2)+" W - " + battery + " - " + remainingTime.toFixed(2) + " h";
+    return totalEnergyNow.toFixed(2) + " Wh | " + currentPower.toFixed(2)+" W | " + battery + " | " + remainingTime.toFixed(2) + " h";
 }
 
 function init() {
