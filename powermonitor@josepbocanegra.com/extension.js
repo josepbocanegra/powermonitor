@@ -8,6 +8,7 @@ const GLib = imports.gi.GLib;
 const VOLTAGENOWPATH = "/sys/class/power_supply/BAT0/voltage_now";
 const CURRENTNOWPATH = "/sys/class/power_supply/BAT0/current_now";
 const CHARGENOWPATH = "/sys/class/power_supply/BAT0/charge_now";
+const CHARGEFULLPATH = "/sys/class/power_supply/BAT0/charge_full";
 
 let sourceId = null;
 
@@ -57,8 +58,10 @@ function getCurrentPower() {
     currentNow = Number(GLib.file_get_contents(CURRENTNOWPATH)[1])/1000000;
     totalEnergyNow = voltageNow * currentNow;
     chargeNow=Number(GLib.file_get_contents(CHARGENOWPATH)[1])/100000*1.1520;
-    remainingTime = chargeNow/totalEnergyNow;
-    return chargeNow.toFixed(2) + " Wh | " + totalEnergyNow.toFixed(2)+" W | " + remainingTime.toFixed(2)+ " h";
+    chargeFull=Number(GLib.file_get_contents(CHARGEFULLPATH)[1])/100000*1.1520;
+    remainingTime = chargeNow/totalEnergyNow
+    remainingPercentage = (chargeNow/chargeFull) * 100;
+    return remainingPercentage.toFixed(0) + " % | " + chargeNow.toFixed(2) + " Wh | " + totalEnergyNow.toFixed(2)+" W | " + remainingTime.toFixed(2)+ " h";
 }
 
 function init() {
