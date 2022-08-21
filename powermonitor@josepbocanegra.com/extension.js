@@ -56,13 +56,13 @@ class Extension {
 function getCurrentPower() {
     let currentPower=0;
     let batteryInt="";
-    let batteryExt="⚡";
+    let batteryExt="⬇";
     let energyNowExt = Number(GLib.file_get_contents(ENERGYNOWPATHEXT)[1])/1000000;
     let energyNowInt = Number(GLib.file_get_contents(ENERGYNOWPATHINT)[1])/1000000;
     let totalEnergyNow = energyNowExt + energyNowInt;
     currentPower=Number(GLib.file_get_contents(POWERNOWPATHEXT)[1])/1000000;
     if(currentPower == 0) {
-        batteryInt="⚡";
+        batteryInt="⬇";
         batteryExt="";
         currentPower=Number(GLib.file_get_contents(POWERNOWPATHINT)[1])/1000000;
     }
