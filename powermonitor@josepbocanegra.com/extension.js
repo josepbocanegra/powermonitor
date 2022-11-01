@@ -9,6 +9,7 @@ const VOLTAGENOWPATH = "/sys/class/power_supply/BAT0/voltage_now";
 const CURRENTNOWPATH = "/sys/class/power_supply/BAT0/current_now";
 const CHARGENOWPATH = "/sys/class/power_supply/BAT0/charge_now";
 const CHARGEFULLPATH = "/sys/class/power_supply/BAT0/charge_full";
+const CHARGEFULLDESIGNPATH = "/sys/class/power_supply/BAT0/charge_full_desing";
 
 let sourceId = null;
 
@@ -61,7 +62,9 @@ function getCurrentPower() {
     chargeFull=Number(GLib.file_get_contents(CHARGEFULLPATH)[1])/100000*1.1520;
     remainingTime = chargeNow/totalEnergyNow
     remainingPercentage = (chargeNow/chargeFull) * 100;
-    return remainingPercentage.toFixed(0) + " % | " + chargeNow.toFixed(2) + " Wh | " + totalEnergyNow.toFixed(2)+" W | " + remainingTime.toFixed(2)+ " h";
+    chargeFullDesign = Number(GLib.file_get_contents(CHARGEFULLDESIGNPATH)[1])/100000*1.1520;
+    batteryHealth = chargeFull/chargeFullDesign;
+    return remainingPercentage.toFixed(0) + " % [" + batteryHealth.toFixed(0) + " %]| " + chargeNow.toFixed(2) + " Wh | " + totalEnergyNow.toFixed(2)+" W | " + remainingTime.toFixed(2)+ " h";
 }
 
 function init() {
