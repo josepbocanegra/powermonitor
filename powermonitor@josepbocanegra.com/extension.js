@@ -11,7 +11,8 @@ const ENERGYNOWPATHEXT = "/sys/class/power_supply/BAT1/energy_now";
 const ENERGYNOWPATHINT = "/sys/class/power_supply/BAT0/energy_now";
 const ENERGYFULLPATHEXT = "/sys/class/power_supply/BAT1/energy_full";
 const ENERGYFULLPATHINT = "/sys/class/power_supply/BAT0/energy_full";
-
+const STATUSPATHEXT = "/sys/class/power_supply/BAT1/status";
+const STATUSPATHINT = "/sys/class/power_supply/BAT0/status";
 let sourceId = null;
 
 class Extension {
@@ -54,15 +55,17 @@ class Extension {
 }
 
 function getCurrentPower() {
+    let currentStatusExt = GLib.file_get_contents(STATUSPATHEXT)[1];
+    let currentStatusInt = GLib.file_get_contents(STATUSPATHINT)[1];
     let currentPower=0;
     let batteryInt="";
-    let batteryExt="⬇";
+    let batteryExt = currentStatusExt == 'Charging\n' ? "🔌" : "⬇";
     let energyNowExt = Number(GLib.file_get_contents(ENERGYNOWPATHEXT)[1])/1000000;
     let energyNowInt = Number(GLib.file_get_contents(ENERGYNOWPATHINT)[1])/1000000;
     let totalEnergyNow = energyNowExt + energyNowInt;
     currentPower=Number(GLib.file_get_contents(POWERNOWPATHEXT)[1])/1000000;
     if(currentPower == 0) {
-        batteryInt="⬇";
+        batteryInt = currentStatusInt == 'Charging\n' ? "🔌" : "⬇";
         batteryExt="";
         currentPower=Number(GLib.file_get_contents(POWERNOWPATHINT)[1])/1000000;
     }
