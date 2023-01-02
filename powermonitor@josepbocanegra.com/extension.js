@@ -57,16 +57,19 @@ class Extension {
 function getCurrentPower() {
     let currentStatusExt = GLib.file_get_contents(STATUSPATHEXT)[1];
     let currentStatusInt = GLib.file_get_contents(STATUSPATHINT)[1];
+    let batteryExt = currentStatusExt == 'Charging\n' ? "⚡" : currentStatusExt == 'Discharging\n' ? "🔻" : "";
+    let batteryInt = currentStatusInt == 'Charging\n' ? "⚡" : currentStatusInt == 'Discharging\n' ? "🔻" : "";
+    let batteryCharging = batteryExt == "" && batteryInt == "" ? "🔌" : " ";
     let currentPower=0;
-    let batteryInt="";
-    let batteryExt = currentStatusExt == 'Charging\n' ? "🔌" : "⬇";
+
+    
     let energyNowExt = Number(GLib.file_get_contents(ENERGYNOWPATHEXT)[1])/1000000;
     let energyNowInt = Number(GLib.file_get_contents(ENERGYNOWPATHINT)[1])/1000000;
     let totalEnergyNow = energyNowExt + energyNowInt;
     currentPower=Number(GLib.file_get_contents(POWERNOWPATHEXT)[1])/1000000;
     if(currentPower == 0) {
-        batteryInt = currentStatusInt == 'Charging\n' ? "🔌" : "⬇";
-        batteryExt="";
+        
+  
         currentPower=Number(GLib.file_get_contents(POWERNOWPATHINT)[1])/1000000;
     }
     let remainingTime = totalEnergyNow/currentPower;
@@ -78,7 +81,7 @@ function getCurrentPower() {
     let remainingIntPercentage = (energyNowInt/energyFullInt) * 1000;
     let remainingBattery = remainingTotalPercentage.toFixed(0) 
         + " % (" + remainingIntPercentage.toFixed(0) + " % int" + batteryInt + " | " 
-        + remainingExtPercentage.toFixed(0) + " % ext" + batteryExt + ") | ";
+        + remainingExtPercentage.toFixed(0) + " % ext" + batteryExt + ")" + batteryCharging + "| ";
     return  remainingBattery + totalEnergyNow.toFixed(2) + " Wh | " 
     + currentPower.toFixed(2)+" W | " + remainingTime.toFixed(2) + " h";
 }
