@@ -59,7 +59,8 @@ function getCurrentPower() {
     let currentStatusInt = GLib.file_get_contents(STATUSPATHINT)[1];
     let batteryExt = currentStatusExt == 'Charging\n' ? "⚡" : currentStatusExt == 'Discharging\n' ? "🔻" : "";
     let batteryInt = currentStatusInt == 'Charging\n' ? "⚡" : currentStatusInt == 'Discharging\n' ? "🔻" : "";
-    let batteryCharging = batteryExt == "" && batteryInt == "" ? "🔌" : " ";
+    const directPlug = batteryExt == "" && batteryInt == "";
+    let batteryChargingIcon = directPlug ? "🔌" : " ";
     let currentPower=0;
 
     
@@ -81,9 +82,9 @@ function getCurrentPower() {
     let remainingIntPercentage = (energyNowInt/energyFullInt) * 1000;
     let remainingBattery = remainingTotalPercentage.toFixed(0) 
         + " % (" + remainingIntPercentage.toFixed(0) + " % int" + batteryInt + " | " 
-        + remainingExtPercentage.toFixed(0) + " % ext" + batteryExt + ")" + batteryCharging + "| ";
+        + remainingExtPercentage.toFixed(0) + " % ext" + batteryExt + ")" + batteryChargingIcon + "| ";
     return  remainingBattery + totalEnergyNow.toFixed(2) + " Wh | " 
-    + currentPower.toFixed(2)+" W | " + remainingTime.toFixed(2) + " h";
+    + currentPower.toFixed(2)+" W | " + (directPlug == true ? "--" : remainingTime.toFixed(2)) + " h";
 }
 
 function init() {
