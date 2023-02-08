@@ -10,6 +10,7 @@ const CURRENTNOWPATH = "/sys/class/power_supply/BAT0/current_now";
 const CHARGENOWPATH = "/sys/class/power_supply/BAT0/charge_now";
 const CHARGEFULLPATH = "/sys/class/power_supply/BAT0/charge_full";
 const CHARGEFULLDESIGNPATH = "/sys/class/power_supply/BAT0/charge_full_design";
+const STATUSPATH = "/sys/class/power_supply/BAT0/status";
 
 let sourceId = null;
 
@@ -53,8 +54,8 @@ class Extension {
 }
 
 function getCurrentPower() {
-    let currentPower=0;
-    let battery=" - ext";
+    let currentStatus = GLib.file_get_contents(STATUSPATH)[1];
+    let batteryStatus = currentStatus == 'Charging\n' ? "⚡" : currentStatus == 'Discharging\n' ? "-" : "";
     voltageNow = Number(GLib.file_get_contents(VOLTAGENOWPATH)[1])/1000000;
     currentNow = Number(GLib.file_get_contents(CURRENTNOWPATH)[1])/1000000;
     totalEnergyNow = voltageNow * currentNow;
@@ -64,7 +65,7 @@ function getCurrentPower() {
     remainingPercentage = (chargeNow/chargeFull) * 100;
     chargeFullDesign = Number(GLib.file_get_contents(CHARGEFULLDESIGNPATH)[1])/100000*1.1520;
     batteryHealth = chargeFull/chargeFullDesign * 100;
-    return remainingPercentage.toFixed(0) + " % [" + batteryHealth.toFixed(0) + " %]| " + chargeNow.toFixed(2) + " Wh | " + totalEnergyNow.toFixed(2)+" W | " + remainingTime.toFixed(2)+ " h";
+    return remainingPercentage.toFixed(0) + " " + batteryStatus + " % [" + batteryHealth.toFixed(0) + " %]| " + chargeNow.toFixed(2) + " Wh | " + totalEnergyNow.toFixed(2)+" W | " + remainingTime.toFixed(2)+ " h";
 }
 
 function init() {
